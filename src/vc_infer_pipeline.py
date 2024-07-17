@@ -1,14 +1,12 @@
-from functools import lru_cache
 import numpy as np, parselmouth, torch, pdb, sys, os
 from time import time as ttime
 import torch.nn.functional as F
 import torchcrepe
-from scipy import signal
 from torch import Tensor
-import pyworld, os, faiss, librosa, torchcrepe
-import random
-import gc
-import re
+import scipy.signal as signal
+import pyworld, os, traceback, faiss, librosa, torchcrepe
+from scipy import signal
+from functools import lru_cache
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 now_dir = os.path.join(BASE_DIR, 'src')
@@ -37,14 +35,23 @@ def cache_harvest_f0(input_audio_path, fs, f0max, f0min, frame_period):
 
 
 def change_rms(data1, sr1, data2, sr2, rate):
-    rms1 = librosa.feature.rms(y=data1, frame_length=sr1 // 2 * 2, hop_length=sr1 // 2)
+    rms1 = librosa.feature.rms(
+        y=data1, frame_length=sr1 // 2 * 2, hop_length=sr1 // 2
+    )
     rms2 = librosa.feature.rms(y=data2, frame_length=sr2 // 2 * 2, hop_length=sr2 // 2)
     rms1 = torch.from_numpy(rms1)
-    rms1 = F.interpolate(rms1.unsqueeze(0), size=data2.shape[0], mode="linear").squeeze()
+    rms1 = F.interpolate(
+        rms1.unsqueeze(0), size=data2.shape[0], mode="linear"
+    ).squeeze()
     rms2 = torch.from_numpy(rms2)
-    rms2 = F.interpolate(rms2.unsqueeze(0), size=data2.shape[0], mode="linear").squeeze()
+    rms2 = F.interpolate(
+        rms2.unsqueeze(0), size=data2.shape[0], mode="linear"
+    ).squeeze()
     rms2 = torch.max(rms2, torch.zeros_like(rms2) + 1e-6)
-    data2 *= (torch.pow(rms1, torch.tensor(1 - rate))* torch.pow(rms2, torch.tensor(rate - 1))).numpy()
+    data2 *= (
+        torch.pow(rms1, torch.tensor(1 - rate))
+        * torch.pow(rms2, torch.tensor(rate - 1))
+    ).numpy()
     return data2
 
 
@@ -454,12 +461,16 @@ class VC(object):
         crepe_hop_length,
         f0_file=None,
     ):
-        if file_index != "" and os.path.exists(file_index) == True and index_rate != 0:
+        if (
+            file_index != ""
+            and os.path.exists(file_index) == True
+            and index_rate != 0
+        ):
             try:
                 index = faiss.read_index(file_index)
                 big_npy = index.reconstruct_n(0, index.ntotal)
-            except Exception as error:
-                print(error)
+            except:
+                traceback.print_exc()
                 index = big_npy = None
         else:
             index = big_npy = None
@@ -494,8 +505,8 @@ class VC(object):
                 for line in lines:
                     inp_f0.append([float(i) for i in line.split(",")])
                 inp_f0 = np.array(inp_f0, dtype="float32")
-            except Exception as error:
-                print(error)
+            except:
+                traceback.print_exc()
         sid = torch.tensor(sid, device=self.device).unsqueeze(0).long()
         pitch, pitchf = None, None
         if if_f0 == 1:
