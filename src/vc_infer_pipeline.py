@@ -77,7 +77,9 @@ class VC(object):
 
     def get_optimal_torch_device(self, index: int = 0) -> torch.device:
         if torch.cuda.is_available():
-            return torch.device(f"cuda:{index % torch.cuda.device_count()}")
+            return torch.device(
+                f"cuda:{index % torch.cuda.device_count()}"
+            )
         elif torch.backends.mps.is_available():
             return torch.device("mps")
         return torch.device("cpu")
@@ -91,7 +93,9 @@ class VC(object):
         hop_length=160,
         model="full",
     ):
-        x = x.astype(np.float32)
+        x = x.astype(
+            np.float32
+        )
         x /= np.quantile(np.abs(x), 0.999)
         torch_device = self.get_optimal_torch_device()
         audio = torch.from_numpy(x).to(torch_device, copy=True)
@@ -147,6 +151,12 @@ class VC(object):
         f0 = f0[0].cpu().numpy()
         return f0
 
+    def get_f0_pyin_computation(self, x, f0_min, f0_max):
+        y, sr = librosa.load("saudio/Sidney.wav", self.sr, mono=True)
+        f0, _, _ = librosa.pyin(y, sr=self.sr, fmin=f0_min, fmax=f0_max)
+        f0 = f0[1:]
+        return f0
+    
     def get_f0_hybrid_computation(
         self,
         methods_str,
@@ -168,7 +178,10 @@ class VC(object):
         x /= np.quantile(np.abs(x), 0.999)
         for method in methods:
             f0 = None
-            if method == "mangio-crepe":
+            if method == "crepe":
+                f0 = self.get_f0_official_crepe_computation(x, f0_min, f0_max)
+                f0 = f0[1:]
+            elif method == "mangio-crepe":
                 f0 = self.get_f0_crepe_computation(
                     x, f0_min, f0_max, p_len, crepe_hop_length
                 )
@@ -234,7 +247,9 @@ class VC(object):
             )
             pad_size = (p_len - len(f0) + 1) // 2
             if pad_size > 0 or p_len - len(f0) - pad_size > 0:
-                f0 = np.pad(f0, [[pad_size, p_len - len(f0) - pad_size]], mode="constant")
+                f0 = np.pad(
+                    f0, [[pad_size, p_len - len(f0) - pad_size]], mode="constant"
+                )
         
         elif f0_method == "harvest":
             input_audio_path2wav[input_audio_path] = x.astype(np.double)
