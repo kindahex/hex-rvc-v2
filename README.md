@@ -1,8 +1,8 @@
 ---
 title: CoverGen
 emoji: 🔥🚀
-colorFrom: green
-colorTo: purple
+colorFrom: gray
+colorTo: green
 sdk: gradio
 sdk_version: 4.38.1
 app_file: app.py
