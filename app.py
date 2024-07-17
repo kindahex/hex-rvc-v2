@@ -1,3 +1,3 @@
 import os
 
-os.system(".src/covergen.py")
+os.system("python src/covergen.py")
