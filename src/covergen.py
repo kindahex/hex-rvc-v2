@@ -15,7 +15,6 @@ from modules.file_processing import process_file_upload
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
-translation = os.path.join(BASE_DIR, 'src', 'translations.json')
 
 
 if __name__ == '__main__':
@@ -194,8 +193,4 @@ if __name__ == '__main__':
                 local_upload_output_message = gr.Text(label='Сообщение вывода', interactive=False)
                 model_upload_button.click(upload_zip_model, inputs=[zip_file, local_model_name], outputs=local_upload_output_message)
 
-    with open(translation, 'r', encoding='utf-8') as f:
-        translations = json.load(f)
-    
-    app.translate_js(translations)
     app.launch(max_threads=512, quiet=True, show_error=True, show_api=False).queue(max_size=1022, default_concurrency_limit=1, api_open=False)
