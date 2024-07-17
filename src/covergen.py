@@ -1,4 +1,5 @@
 import os
+import json
 import shutil
 import urllib.request
 import zipfile
@@ -192,4 +193,8 @@ if __name__ == '__main__':
                 local_upload_output_message = gr.Text(label='Сообщение вывода', interactive=False)
                 model_upload_button.click(upload_zip_model, inputs=[zip_file, local_model_name], outputs=local_upload_output_message)
 
+    with open('translations.json', 'r', encoding='utf-8') as f:
+        translations = json.load(f)
+    
+    app.translate_js(translations)
     app.launch(max_threads=512, quiet=True, show_error=True, show_api=False).queue(max_size=1022, default_concurrency_limit=1, api_open=False)
