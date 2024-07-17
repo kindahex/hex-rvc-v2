@@ -1,7 +1,7 @@
+import sys, torch, numpy as np, traceback, pdb
 import torch.nn as nn
-import torch, numpy as np
+from time import time as ttime
 import torch.nn.functional as F
-from librosa.filters import mel
 
 
 class BiGRU(nn.Module):
@@ -245,12 +245,19 @@ class E2E(nn.Module):
                 nn.Dropout(0.25),
                 nn.Sigmoid(),
             )
+        else:
+            self.fc = nn.Sequential(
+                nn.Linear(3 * N_MELS, N_CLASS), nn.Dropout(0.25), nn.Sigmoid()
+            )
 
     def forward(self, mel):
         mel = mel.transpose(-1, -2).unsqueeze(1)
         x = self.cnn(self.unet(mel)).transpose(1, 2).flatten(-2)
         x = self.fc(x)
         return x
+
+
+from librosa.filters import mel
 
 
 class MelSpectrogram(torch.nn.Module):
