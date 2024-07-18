@@ -22,6 +22,9 @@ if __name__ == '__main__':
     with gr.Blocks(title='CoverGen Lite - Politrees (v0.2)', theme=gr.themes.Soft(primary_hue="green", secondary_hue="green", neutral_hue="neutral", spacing_size="sm", radius_size="lg")) as app:
         with gr.Tab("Welcome/Contacts"):
             gr.HTML("<center><h1>Welcome to CoverGen Lite - Politrees (v0.2)</h1></center>")
+            with gr.Column(variant='panel'):
+                gr.HTML("<center><h2>This space is running too slow due to a weak server, so I made a Google Colab notebook to work faster with this interface: <a href='https://colab.research.google.com/drive/1HzuPgICRrjqUWQWb5Zn-l07m099-n-Nr'>Google Colab Notebook</a>.</h2></center>")
+                https://colab.research.google.com/drive/1HzuPgICRrjqUWQWb5Zn-l07m099-n-Nr?usp=sharing
             with gr.Row():
                 with gr.Column(variant='panel'):
                     gr.HTML("<center><h2><a href='https://t.me/Politrees2'>Telegram</a></h2></center>")
