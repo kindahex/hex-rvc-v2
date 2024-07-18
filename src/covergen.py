@@ -25,14 +25,14 @@ if __name__ == '__main__':
             gr.HTML("<center><h1>Добро пожаловать в CoverGen Lite - Politrees (v0.2)</h1></center>")
             with gr.Row():
                 with gr.Column(variant='panel'):
-                    gr.HTML("<center><h2><a href='https://t.me/Politrees2'>Telegram</a></h2></center>")
+                    gr.HTML("<center><h2><a href='https://t.me/Politrees2'>Telegram ЛС</a></h2></center>")
                     gr.HTML("<center><h2><a href='https://vk.com/artem__bebroy'>ВКонтакте</a></h2></center>")
                 with gr.Column(variant='panel'):
                     gr.HTML("<center><h2><a href='https://t.me/pol1trees'>Telegram Канал</a></h2></center>")
                     gr.HTML("<center><h2><a href='https://t.me/+GMTP7hZqY0E4OGRi'>Telegram Чат</a></h2></center>")
             with gr.Column(variant='panel'):
-                gr.HTML("<center><h2><a href='https://www.youtube.com/channel/UCHb3fZEVxUisnqLqCrEM8ZA'>YouTube: Politrees</a></h2></center>")
-                gr.HTML("<center><h2><a href='https://github.com/Bebra777228/Pol-Litres-RVC'>GitHub проекта</a></h2></center>")
+                gr.HTML("<center><h2><a href='https://www.youtube.com/channel/UCHb3fZEVxUisnqLqCrEM8ZA'>YouTube</a></h2></center>")
+                gr.HTML("<center><h2><a href='https://github.com/Bebra777228'>GitHub</a></h2></center>")
 
         with gr.Tab("Преобразование голоса"):
             with gr.Row(equal_height=False):
