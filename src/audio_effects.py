@@ -42,13 +42,12 @@ def add_audio_effects(vocal_audio_path, instrumental_audio_path, reverb_rm_size,
                       chorus_mix, output_format, vocal_gain, instrumental_gain, progress=gr.Progress()):
 
     if not vocal_audio_path or not instrumental_audio_path:
-        raise ValueError("Оба пути к аудиофайлам должны быть заполнены.")
+        raise ValueError("Both audio file paths must be filled in.")
 
-    # Convert vocal file to stereo if necessary
     stereo_vocal_path = 'Vocal_Stereo.wav'
     convert_to_stereo(vocal_audio_path, stereo_vocal_path)
 
-    display_progress(0.2, "Применение аудиоэффектов к вокалу...", progress)
+    display_progress(0.2, "Apply audio effects to vocals...", progress)
     board = Pedalboard(
         [
             HighpassFilter(),
@@ -69,7 +68,7 @@ def add_audio_effects(vocal_audio_path, instrumental_audio_path, reverb_rm_size,
                 effected = board(chunk, f.samplerate, reset=False)
                 o.write(effected)
 
-    display_progress(0.5, "Объединение вокала и инструментальной части...", progress)
+    display_progress(0.5, "Combining vocals and instrumental parts...", progress)
     output_dir = os.path.join(BASE_DIR, 'processed_output')
     os.makedirs(output_dir, exist_ok=True)
     combined_output_path = os.path.join(output_dir, f'AiCover_combined.{output_format}')
@@ -79,6 +78,6 @@ def add_audio_effects(vocal_audio_path, instrumental_audio_path, reverb_rm_size,
 
     combine_audio(vocal_output_path, instrumental_audio_path, combined_output_path, vocal_gain, instrumental_gain, output_format)
 
-    display_progress(1.0, "Готово!", progress)
+    display_progress(1.0, "Done!", progress)
 
     return combined_output_path
