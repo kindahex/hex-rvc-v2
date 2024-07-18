@@ -9,7 +9,8 @@ import gradio as gr
 from main import song_cover_pipeline
 from audio_effects import add_audio_effects
 from modules.model_management import ignore_files, update_models_list, extract_zip, download_from_url, upload_zip_model
-from modules.ui_updates import show_hop_slider, update_f0_method, update_button_text, update_button_text_voc, update_button_text_inst
+from modules.ui_updates import (show_hop_slider, update_f0_method, update_button_text,
+            update_button_text_voc, update_button_text_inst, swap_visibility, swap_buttons)
 from modules.file_processing import process_file_upload
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -57,11 +58,24 @@ if __name__ == '__main__':
                         pitch = gr.Slider(-24, 24, value=0, step=0.5, label='Pitch Adjustment', info='-24 - male voice || 24 - female voice')
 
                 with gr.Column(scale=2, variant='panel'):
-                    with gr.Group():
-                        local_file = gr.Audio(label='Audio File', interactive=False, show_download_button=False, show_share_button=False)
-                        uploaded_file = gr.UploadButton(label='Upload Audio File', file_types=['audio'], variant='primary')
-                        uploaded_file.upload(process_file_upload, inputs=[uploaded_file], outputs=[local_file])
-                        uploaded_file.upload(update_button_text, outputs=[uploaded_file])
+                    with gr.Column() as upload_file:
+                        with gr.Group():
+                            local_file = gr.Audio(label='Audio File', interactive=False, show_download_button=False, show_share_button=False)
+                            uploaded_file = gr.UploadButton(label='Upload Audio File', file_types=['audio'], variant='primary')
+
+                    with gr.Column(visible=False) as enter_local_file:
+                        song_input = gr.Text(label='Local file path', info='Enter the full path to the local file.')
+
+                    with gr.Column():
+                        show_upload_button = gr.Button('Uploading a file from your device', visible=False)
+                        show_enter_button = gr.Button('Entering the path to the local file')
+                    
+                uploaded_file.upload(process_file_upload, inputs=[uploaded_file], outputs=[song_input, local_file])
+                uploaded_file.upload(update_button_text, outputs=[uploaded_file])
+                show_upload_button.click(swap_visibility, outputs=[upload_file, enter_local_file, song_input, local_file])
+                show_enter_button.click(swap_visibility, outputs=[enter_local_file, upload_file, song_input, local_file])
+                show_upload_button.click(swap_buttons, outputs=[show_upload_button, show_enter_button])
+                show_enter_button.click(swap_buttons, outputs=[show_enter_button, show_upload_button])
 
             with gr.Group():
                 with gr.Row(variant='panel'):
@@ -85,24 +99,50 @@ if __name__ == '__main__':
 
             ref_btn.click(update_models_list, None, outputs=rvc_model)
             generate_btn.click(song_cover_pipeline,
-                              inputs=[uploaded_file, rvc_model, pitch, index_rate, filter_radius, rms_mix_rate, f0_method, crepe_hop_length, protect, output_format],
+                              inputs=[song_input, rvc_model, pitch, index_rate, filter_radius, rms_mix_rate, f0_method, crepe_hop_length, protect, output_format],
                               outputs=[converted_voice])
 
         with gr.Tab('Merge/Process'):
             with gr.Row(equal_height=False):
                 with gr.Column(variant='panel'):
-                    with gr.Group():
-                        vocal_audio = gr.Audio(label='Vocals', interactive=False, show_download_button=False, show_share_button=False)
-                        upload_vocal_audio = gr.UploadButton(label='Upload Vocals', file_types=['audio'], variant='primary')
-                        upload_vocal_audio.upload(process_file_upload, inputs=[upload_vocal_audio], outputs=[vocal_audio])
-                        upload_vocal_audio.upload(update_button_text_voc, outputs=[upload_vocal_audio])
+                    with gr.Column() as upload_voc_file:
+                        with gr.Group():
+                            vocal_audio = gr.Audio(label='Vocals', interactive=False, show_download_button=False, show_share_button=False)
+                            upload_vocal_audio = gr.UploadButton(label='Upload Vocals', file_types=['audio'], variant='primary')
+
+                    with gr.Column(visible=False) as enter_local_voc_file:
+                        vocal_input = gr.Text(label='Vocal file path', info='Enter the full path to the local vocal file.')
+
+                    with gr.Column():
+                        show_upload_voc_button = gr.Button('Uploading a file from your device', visible=False)
+                        show_enter_voc_button = gr.Button('Entering the path to the local file')
+                
+                upload_vocal_audio.upload(process_file_upload, inputs=[upload_vocal_audio], outputs=[vocal_input, vocal_audio])
+                upload_vocal_audio.upload(update_button_text_voc, outputs=[upload_vocal_audio])
+                show_upload_voc_button.click(swap_visibility, outputs=[upload_voc_file, enter_local_voc_file, vocal_input, vocal_audio])
+                show_enter_voc_button.click(swap_visibility, outputs=[enter_local_voc_file, upload_voc_file, vocal_input, vocal_audio])
+                show_upload_voc_button.click(swap_buttons, outputs=[show_upload_voc_button, show_enter_voc_button])
+                show_enter_voc_button.click(swap_buttons, outputs=[show_enter_voc_button, show_upload_voc_button])
 
                 with gr.Column(variant='panel'):
-                    with gr.Group():
-                        instrumental_audio = gr.Audio(label='Instrumental', interactive=False, show_download_button=False, show_share_button=False)
-                        upload_instrumental_audio = gr.UploadButton(label='Upload Instrumental', file_types=['audio'], variant='primary')
-                        upload_instrumental_audio.upload(process_file_upload, inputs=[upload_instrumental_audio], outputs=[instrumental_audio])
-                        upload_instrumental_audio.upload(update_button_text_inst, outputs=[upload_instrumental_audio])
+                    with gr.Column() as upload_inst_file:
+                        with gr.Group():
+                            instrumental_audio = gr.Audio(label='Instrumental', interactive=False, show_download_button=False, show_share_button=False)
+                            upload_instrumental_audio = gr.UploadButton(label='Upload Instrumental', file_types=['audio'], variant='primary')
+
+                    with gr.Column(visible=False) as enter_local_inst_file:
+                        instrumental_input = gr.Text(label='Instrumental file path', info='Enter the full path to the local instrumental file.')
+
+                    with gr.Column():
+                        show_upload_voc_button = gr.Button('Uploading a file from your device', visible=False)
+                        show_enter_voc_button = gr.Button('Entering the path to the local file')
+                
+                upload_instrumental_audio.upload(process_file_upload, inputs=[upload_instrumental_audio], outputs=[instrumental_audio])
+                upload_instrumental_audio.upload(update_button_text_inst, outputs=[upload_instrumental_audio])
+                show_upload_inst_button.click(swap_visibility, outputs=[upload_inst_file, enter_local_inst_file, vocal_input, vocal_audio])
+                show_enter_inst_button.click(swap_visibility, outputs=[enter_local_inst_file, upload_inst_file, vocal_input, vocal_audio])
+                show_upload_inst_button.click(swap_buttons, outputs=[show_upload_inst_button, show_enter_inst_button])
+                show_enter_inst_button.click(swap_buttons, outputs=[show_enter_inst_button, show_upload_inst_button])
 
             with gr.Group():
                 with gr.Row(variant='panel'):
@@ -164,7 +204,7 @@ if __name__ == '__main__':
                                     noise_gate_release = gr.Slider(0, 1000, value=100, label='Release Time (ms)', info='This parameter controls the speed at which the noise gate closes when the sound becomes quiet enough. A higher value means the gate closes slower.')
 
             process_btn.click(add_audio_effects,
-                            inputs=[upload_vocal_audio, upload_instrumental_audio, reverb_rm_size, reverb_wet, reverb_dry, reverb_damping,
+                            inputs=[vocal_input, instrumental_input, reverb_rm_size, reverb_wet, reverb_dry, reverb_damping,
                             reverb_width, low_shelf_gain, high_shelf_gain, compressor_ratio, compressor_threshold,
                             noise_gate_threshold, noise_gate_ratio, noise_gate_attack, noise_gate_release,
                             chorus_rate_hz, chorus_depth, chorus_centre_delay_ms, chorus_feedback, chorus_mix,
