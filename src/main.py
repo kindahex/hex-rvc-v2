@@ -20,7 +20,7 @@ def get_rvc_model(voice_model):
     rvc_index_path = next((os.path.join(model_dir, f) for f in os.listdir(model_dir) if f.endswith('.index')), None)
 
     if rvc_model_path is None:
-        raise FileNotFoundError(f'В каталоге {model_dir} отсутствует файл модели.')
+        raise FileNotFoundError(f'There is no model file in the {model_dir} directory.')
 
     return rvc_model_path, rvc_index_path
 
@@ -61,12 +61,12 @@ def song_cover_pipeline(uploaded_file, voice_model, pitch_change, index_rate=0.5
                         crepe_hop_length=128, protect=0.33, output_format='mp3', progress=gr.Progress()):
 
     if not uploaded_file or not voice_model:
-        raise ValueError('Убедитесь, что поле ввода песни и поле модели голоса заполнены.')
+        raise ValueError('Make sure that the song input field and voice model field are filled in.')
 
-    display_progress(0, '[~] Запуск конвейера генерации AI-кавера...', progress)
+    display_progress(0, '[~] Starting the AI cover generation pipeline...', progress)
 
     if not os.path.exists(uploaded_file):
-        raise FileNotFoundError(f'{uploaded_file} не существует.')
+        raise FileNotFoundError(f'{uploaded_file} does not exist.')
 
     song_id = get_hash(uploaded_file)
     song_dir = os.path.join(OUTPUT_DIR, song_id)
@@ -78,7 +78,7 @@ def song_cover_pipeline(uploaded_file, voice_model, pitch_change, index_rate=0.5
     if os.path.exists(ai_cover_path):
         os.remove(ai_cover_path)
 
-    display_progress(0.5, '[~] Преобразование вокала...', progress)
+    display_progress(0.5, '[~] Converting vocals...', progress)
     voice_change(voice_model, orig_song_path, ai_cover_path, pitch_change, f0_method, index_rate,
                  filter_radius, rms_mix_rate, protect, crepe_hop_length)
 
