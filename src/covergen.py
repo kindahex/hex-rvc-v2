@@ -164,8 +164,8 @@ if __name__ == '__main__':
                             compressor_ratio, compressor_threshold, low_shelf_gain, high_shelf_gain, noise_gate_threshold,
                             noise_gate_ratio, noise_gate_attack, noise_gate_release])
 
-        with gr.Tab('Model Upload'):
-            with gr.Tab('Upload from Link'):
+        with gr.Tab('Model downloader'):
+            with gr.Tab('download from Link'):
                 with gr.Row():
                     with gr.Column(variant='panel'):
                         gr.HTML("<center><h3>Paste the link from <a href='https://huggingface.co/' target='_blank'>HuggingFace</a>, <a href='https://pixeldrain.com/' target='_blank'>Pixeldrain</a>, <a href='https://drive.google.com/' target='_blank'>Google Drive</a> or <a href='https://mega.nz/' target='_blank'>Mega</a> into the field below</h3></center>")
