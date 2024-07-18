@@ -193,4 +193,4 @@ if __name__ == '__main__':
                 local_upload_output_message = gr.Text(label='Output Message', interactive=False)
                 model_upload_button.click(upload_zip_model, inputs=[zip_file, local_model_name], outputs=local_upload_output_message)
 
-    app.launch(show_api=False).queue(api_open=False)
+    app.launch(share=True, show_api=False).queue(api_open=False)
