@@ -34,7 +34,7 @@ def extract_zip(extraction_folder, zip_name):
                 model_filepath = os.path.join(root, name)
 
     if not model_filepath:
-        raise gr.Error(f'Не найден файл модели .pth в распакованном zip-файле. Пожалуйста, проверьте {extraction_folder}.')
+        raise gr.Error(f'The .pth model file was not found in the unzipped zip file. Please check the {extraction_folder}.')
 
     os.rename(model_filepath, os.path.join(extraction_folder, os.path.basename(model_filepath)))
     if index_filepath:
@@ -46,47 +46,47 @@ def extract_zip(extraction_folder, zip_name):
 
 def download_from_url(url, dir_name, progress=gr.Progress()):
     try:
-        progress(0, desc=f'[~] Загрузка голосовой модели с именем {dir_name}...')
+        progress(0, desc=f'[~] Downloading voice model named {dir_name}...')
         zip_name = os.path.join(rvc_models_dir, dir_name + '.zip')
         extraction_folder = os.path.join(rvc_models_dir, dir_name)
         if os.path.exists(extraction_folder):
-            raise gr.Error(f'Директория голосовой модели {dir_name} уже существует! Выберите другое имя для вашей голосовой модели.')
+            raise gr.Error(f'The voice model directory {dir_name} already exists! Please choose a different name for your voice model.')
 
         if 'drive.google.com' in url:
-            progress(0.5, desc='[~] Загрузка модели с Google Grive...')
+            progress(0.5, desc='[~] Downloading model from Google Grive...')
             file_id = url.split("file/d/")[1].split("/")[0] if "file/d/" in url else url.split("id=")[1].split("&")[0]
             output = zip_name
             gdown.download(id=file_id, output=output, quiet=False)
 
         elif 'huggingface.co' in url:
-            progress(0.5, desc='[~] Загрузка модели с HuggingFace...')
+            progress(0.5, desc='[~] Downloading model from HuggingFace...')
             urllib.request.urlretrieve(url, zip_name)
 
         elif 'pixeldrain.com' in url:
-            progress(0.5, desc='[~] Загрузка модели с Pixeldrain...')
+            progress(0.5, desc='[~] Downloading model from Pixeldrain...')
             file_id = url.split("pixeldrain.com/u/")[1]
             response = requests.get(f"https://pixeldrain.com/api/file/{file_id}")
             with open(zip_name, 'wb') as f:
                 f.write(response.content)
 
         elif 'mega.nz' in url:
-            progress(0.5, desc='[~] Загрузка модели с Mega...')
+            progress(0.5, desc='[~] Downloading model from Mega...')
             m = Mega()
             m.download_url(url, dest_filename=zip_name)
 
         elif 'yadi.sk' in url or 'disk.yandex.ru' in url:
-            progress(0.5, desc='[~] Загрузка модели с Яндекс Диска...')
+            progress(0.5, desc='[~] Downloading model from Yandex Disk...')
             yandex_api_url = "https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key={}".format(url)
             response = requests.get(yandex_api_url)
             if response.status_code == 200:
                 download_link = response.json().get('href')
                 urllib.request.urlretrieve(download_link, zip_name)
             else:
-                raise gr.Error(f"Ошибка при получении ссылки на скачивание с Яндекс Диск: {response.status_code}")
+                raise gr.Error(f"Error when receiving a download link from Yandex Disk: {response.status_code}")
 
-        progress(0.8, desc='[~] Распаковка zip-файла...')
+        progress(0.8, desc='[~] Extracting zip file...')
         extract_zip(extraction_folder, zip_name)
-        return f'[+] Модель {dir_name} успешно загружена!'
+        return f'[+] The {dir_name} model was loaded successfully!'
     except Exception as e:
         raise gr.Error(str(e))
 
@@ -94,12 +94,12 @@ def upload_zip_model(zip_path, dir_name, progress=gr.Progress()):
     try:
         extraction_folder = os.path.join(rvc_models_dir, dir_name)
         if os.path.exists(extraction_folder):
-            raise gr.Error(f'Директория голосовой модели {dir_name} уже существует! Выберите другое имя для вашей голосовой модели.')
+            raise gr.Error(f'The voice model directory {dir_name} already exists! Choose a different name for your voice model.')
 
         zip_name = zip_path.name
-        progress(0.8, desc='[~] Распаковка zip-файла...')
+        progress(0.8, desc='[~] Extracting zip file...')
         extract_zip(extraction_folder, zip_name)
-        return f'[+] Модель {dir_name} успешно загружена!'
+        return f'[+] The {dir_name} model was loaded successfully!'
 
     except Exception as e:
         raise gr.Error(str(e))
