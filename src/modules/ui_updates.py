@@ -16,10 +16,10 @@ def update_f0_method(use_hybrid_methods):
 
 
 def update_button_text():
-    return gr.update(label="Загрузить другой аудио-файл")
+    return gr.update(label="Upload different audio file")
 
 def update_button_text_voc():
-    return gr.update(label="Загрузить другой вокал")
+    return gr.update(label="Upload different vocals")
 
 def update_button_text_inst():
-    return gr.update(label="Загрузить другой инструментал")
+    return gr.update(label="Upload different instrumental")
