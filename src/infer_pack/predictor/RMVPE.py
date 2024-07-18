@@ -334,28 +334,23 @@ class RMVPE:
         ckpt = torch.load(model_path, map_location="cpu")
         model.load_state_dict(ckpt)
         model.eval()
-        if is_half == True:
+        if is_half:
             model = model.half()
         self.model = model
-        self.resample_kernel = {}
         self.is_half = is_half
-        if device is None:
-            device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.device = device
-        self.mel_extractor = MelSpectrogram(
-            is_half, 128, 16000, 1024, 160, None, 30, 8000
-        ).to(device)
-        self.model = self.model.to(device)
+        self.device = device if device else "cuda" if torch.cuda.is_available() else "cpu"
+        self.mel_extractor = MelSpectrogram(is_half, 128, 16000, 1024, 160, None, 30, 8000).to(self.device)
+        self.model = self.model.to(self.device)
         cents_mapping = 20 * np.arange(360) + 1997.3794084376191
-        self.cents_mapping = np.pad(cents_mapping, (4, 4))  # 368
+        self.cents_mapping = np.pad(cents_mapping, (4, 4))
 
     def mel2hidden(self, mel):
         with torch.no_grad():
             n_frames = mel.shape[-1]
-            mel = mel.float()  # Приведение к float32 перед паддингом
-            mel = F.pad(
-                mel, (0, 32 * ((n_frames - 1) // 32 + 1) - n_frames), mode="reflect"
-            )
+            mel = mel.float()
+            mel = F.pad(mel, (0, 32 * ((n_frames - 1) // 32 + 1) - n_frames), mode="reflect")
+            if self.is_half:
+                mel = mel.half()
             hidden = self.model(mel)
             return hidden[:, :n_frames]
 
@@ -370,7 +365,7 @@ class RMVPE:
         mel = self.mel_extractor(audio, center=True)
         hidden = self.mel2hidden(mel)
         hidden = hidden.squeeze(0).cpu().numpy()
-        if self.is_half == True:
+        if self.is_half:
             hidden = hidden.astype("float32")
         f0 = self.decode(hidden, thred=thred)
         return f0
@@ -384,23 +379,23 @@ class RMVPE:
         starts = center - 4
         ends = center + 5
         for idx in range(salience.shape[0]):
-            todo_salience.append(salience[:, starts[idx] : ends[idx]][idx])
-            todo_cents_mapping.append(self.cents_mapping[starts[idx] : ends[idx]])
+            todo_salience.append(salience[:, starts[idx]:ends[idx]][idx])
+            todo_cents_mapping.append(self.cents_mapping[starts[idx]:ends[idx]])
         todo_salience = np.array(todo_salience)
         todo_cents_mapping = np.array(todo_cents_mapping)
         product_sum = np.sum(todo_salience * todo_cents_mapping, 1)
         weight_sum = np.sum(todo_salience, 1)
-        devided = product_sum / weight_sum
+        divided = product_sum / weight_sum
         maxx = np.max(salience, axis=1)
-        devided[maxx <= thred] = 0
-        return devided
+        divided[maxx <= thred] = 0
+        return divided
 
     def infer_from_audio_with_pitch(self, audio, thred=0.03, f0_min=50, f0_max=1100):
         audio = torch.from_numpy(audio).float().to(self.device).unsqueeze(0)
         mel = self.mel_extractor(audio, center=True)
         hidden = self.mel2hidden(mel)
         hidden = hidden.squeeze(0).cpu().numpy()
-        if self.is_half == True:
+        if self.is_half:
             hidden = hidden.astype("float32")
         f0 = self.decode(hidden, thred=thred)
         f0[(f0 < f0_min) | (f0 > f0_max)] = 0  
