@@ -134,8 +134,8 @@ if __name__ == '__main__':
                         instrumental_input = gr.Text(label='Instrumental file path', info='Enter the full path to the local instrumental file.')
 
                     with gr.Column():
-                        show_upload_voc_button = gr.Button('Uploading a file from your device', visible=False)
-                        show_enter_voc_button = gr.Button('Entering the path to the local file')
+                        show_upload_inst_button = gr.Button('Uploading a file from your device', visible=False)
+                        show_enter_inst_button = gr.Button('Entering the path to the local file')
                 
                 upload_instrumental_audio.upload(process_file_upload, inputs=[upload_instrumental_audio], outputs=[instrumental_audio])
                 upload_instrumental_audio.upload(update_button_text_inst, outputs=[upload_instrumental_audio])
