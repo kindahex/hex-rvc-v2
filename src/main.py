@@ -45,7 +45,12 @@ def display_progress(percent, message, progress=gr.Progress()):
 
 def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method, index_rate, filter_radius, rms_mix_rate, protect, crepe_hop_length):
     rvc_model_path, rvc_index_path = get_rvc_model(voice_model)
-    device = 'cpu'
+
+    if torch.cuda.is_available():
+        device = 'cuda:0'
+    else:
+        device = 'cpu'
+
     config = Config(device, True)
     hubert_model = load_hubert(device, config.is_half, os.path.join(RVC_MODELS_DIR, 'hubert_base.pt'))
     cpt, version, net_g, tgt_sr, vc = get_vc(device, config.is_half, config, rvc_model_path)
