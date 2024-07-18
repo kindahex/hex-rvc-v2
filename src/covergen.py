@@ -137,10 +137,10 @@ if __name__ == '__main__':
                         show_upload_inst_button = gr.Button('Uploading a file from your device', visible=False)
                         show_enter_inst_button = gr.Button('Entering the path to the local file')
                 
-                upload_instrumental_audio.upload(process_file_upload, inputs=[upload_instrumental_audio], outputs=[instrumental_audio])
+                upload_instrumental_audio.upload(process_file_upload, inputs=[upload_instrumental_audio], outputs=[instrumental_input, instrumental_audio])
                 upload_instrumental_audio.upload(update_button_text_inst, outputs=[upload_instrumental_audio])
-                show_upload_inst_button.click(swap_visibility, outputs=[upload_inst_file, enter_local_inst_file, vocal_input, vocal_audio])
-                show_enter_inst_button.click(swap_visibility, outputs=[enter_local_inst_file, upload_inst_file, vocal_input, vocal_audio])
+                show_upload_inst_button.click(swap_visibility, outputs=[upload_inst_file, enter_local_inst_file, instrumental_input, instrumental_audio])
+                show_enter_inst_button.click(swap_visibility, outputs=[enter_local_inst_file, upload_inst_file, instrumental_input, instrumental_audio])
                 show_upload_inst_button.click(swap_buttons, outputs=[show_upload_inst_button, show_enter_inst_button])
                 show_enter_inst_button.click(swap_buttons, outputs=[show_enter_inst_button, show_upload_inst_button])
 
