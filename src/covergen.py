@@ -164,8 +164,8 @@ if __name__ == '__main__':
                             compressor_ratio, compressor_threshold, low_shelf_gain, high_shelf_gain, noise_gate_threshold,
                             noise_gate_ratio, noise_gate_attack, noise_gate_release])
 
-        with gr.Tab('Model downloader'):
-            with gr.Tab('download from Link'):
+        with gr.Tab('Model Downloader'):
+            with gr.Tab('Download from Link'):
                 with gr.Row():
                     with gr.Column(variant='panel'):
                         gr.HTML("<center><h3>Paste the link from <a href='https://huggingface.co/' target='_blank'>HuggingFace</a>, <a href='https://pixeldrain.com/' target='_blank'>Pixeldrain</a>, <a href='https://drive.google.com/' target='_blank'>Google Drive</a> or <a href='https://mega.nz/' target='_blank'>Mega</a> into the field below</h3></center>")
@@ -193,4 +193,4 @@ if __name__ == '__main__':
                 local_upload_output_message = gr.Text(label='Output Message', interactive=False)
                 model_upload_button.click(upload_zip_model, inputs=[zip_file, local_model_name], outputs=local_upload_output_message)
 
-    app.launch(max_threads=512, quiet=True, show_error=True, show_api=False).queue(max_size=1022, default_concurrency_limit=1, api_open=False)
+    app.launch(show_api=False).queue(api_open=False)
