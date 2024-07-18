@@ -19,8 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Config:
     def __init__(self, device, is_half):
-        self.device = 'cpu'
-        self.is_half = True
+        self.device = device
+        self.is_half = is_half
         self.n_cpu = 0
         self.gpu_name = None
         self.gpu_mem = None
@@ -62,6 +62,14 @@ class Config:
                     strr = f.read().replace("3.7", "3.0")
                 with open(BASE_DIR / "src" / "trainset_preprocess_pipeline_print.py", "w") as f:
                     f.write(strr)
+
+        elif torch.backends.mps.is_available():
+            print("No supported N-card found, use MPS for inference")
+            self.device = "mps"
+        else:
+            print("No supported N-card found, use CPU for inference")
+            self.device = "cpu"
+            self.is_half = True
 
         if self.n_cpu == 0:
             self.n_cpu = cpu_count()
