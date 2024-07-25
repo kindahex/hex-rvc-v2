@@ -1,13 +1,14 @@
+from functools import lru_cache
 import numpy as np, parselmouth, torch, pdb, sys, os
 from time import time as ttime
 import torch.nn.functional as F
 import torchcrepe
-from torch import Tensor
-import scipy.signal as signal
-import pyworld, os, traceback, faiss, librosa, torchcrepe
 from scipy import signal
-from functools import lru_cache
-import gc, re
+from torch import Tensor
+import pyworld, os, faiss, librosa, torchcrepe
+import random
+import gc
+import re
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 now_dir = os.path.join(BASE_DIR, 'src')
@@ -36,19 +37,20 @@ def cache_harvest_f0(input_audio_path, fs, f0max, f0min, frame_period):
 
 
 def change_rms(data1, sr1, data2, sr2, rate):
-    rms1 = librosa.feature.rms(
-        y=data1, frame_length=sr1 // 2 * 2, hop_length=sr1 // 2
-    )
+    rms1 = librosa.feature.rms(y=data1, frame_length=sr1 // 2 * 2, hop_length=sr1 // 2)
     rms2 = librosa.feature.rms(y=data2, frame_length=sr2 // 2 * 2, hop_length=sr2 // 2)
+
     rms1 = torch.from_numpy(rms1)
     rms1 = F.interpolate(
         rms1.unsqueeze(0), size=data2.shape[0], mode="linear"
     ).squeeze()
+
     rms2 = torch.from_numpy(rms2)
     rms2 = F.interpolate(
         rms2.unsqueeze(0), size=data2.shape[0], mode="linear"
     ).squeeze()
     rms2 = torch.max(rms2, torch.zeros_like(rms2) + 1e-6)
+
     data2 *= (
         torch.pow(rms1, torch.tensor(1 - rate))
         * torch.pow(rms2, torch.tensor(rate - 1))
@@ -78,9 +80,7 @@ class VC(object):
 
     def get_optimal_torch_device(self, index: int = 0) -> torch.device:
         if torch.cuda.is_available():
-            return torch.device(
-                f"cuda:{index % torch.cuda.device_count()}"
-            )
+            return torch.device(f"cuda:{index % torch.cuda.device_count()}")
         elif torch.backends.mps.is_available():
             return torch.device("mps")
         return torch.device("cpu")
@@ -94,9 +94,7 @@ class VC(object):
         hop_length=160,
         model="full",
     ):
-        x = x.astype(
-            np.float32
-        )
+        x = x.astype(np.float32)
         x /= np.quantile(np.abs(x), 0.999)
         torch_device = self.get_optimal_torch_device()
         audio = torch.from_numpy(x).to(torch_device, copy=True)
@@ -152,12 +150,6 @@ class VC(object):
         f0 = f0[0].cpu().numpy()
         return f0
 
-    def get_f0_pyin_computation(self, x, f0_min, f0_max):
-        y, sr = librosa.load("saudio/Sidney.wav", self.sr, mono=True)
-        f0, _, _ = librosa.pyin(y, sr=self.sr, fmin=f0_min, fmax=f0_max)
-        f0 = f0[1:]
-        return f0
-    
     def get_f0_hybrid_computation(
         self,
         methods_str,
@@ -180,8 +172,9 @@ class VC(object):
         for method in methods:
             f0 = None
             if method == "crepe":
-                f0 = self.get_f0_official_crepe_computation(x, f0_min, f0_max)
-                f0 = f0[1:]
+                f0 = self.get_f0_crepe_computation(
+                    x, f0_min, f0_max, p_len
+                )
             elif method == "mangio-crepe":
                 f0 = self.get_f0_crepe_computation(
                     x, f0_min, f0_max, p_len, crepe_hop_length
@@ -228,11 +221,13 @@ class VC(object):
         filter_radius,
         crepe_hop_length,
         inp_f0=None,
+        f0_min=50,
+        f0_max=1100,
     ):
         global input_audio_path2wav
         time_step = self.window / self.sr * 1000
-        f0_min = 50
-        f0_max = 1100
+        #f0_min = 50
+        #f0_max = 1100
         f0_mel_min = 1127 * np.log(1 + f0_min / 700)
         f0_mel_max = 1127 * np.log(1 + f0_max / 700)
         if f0_method == "pm":
@@ -248,9 +243,7 @@ class VC(object):
             )
             pad_size = (p_len - len(f0) + 1) // 2
             if pad_size > 0 or p_len - len(f0) - pad_size > 0:
-                f0 = np.pad(
-                    f0, [[pad_size, p_len - len(f0) - pad_size]], mode="constant"
-                )
+                f0 = np.pad(f0, [[pad_size, p_len - len(f0) - pad_size]], mode="constant")
         
         elif f0_method == "harvest":
             input_audio_path2wav[input_audio_path] = x.astype(np.double)
@@ -268,10 +261,10 @@ class VC(object):
             )
             f0 = pyworld.stonemask(x.astype(np.double), f0, t, self.sr)
             f0 = signal.medfilt(f0, 3)
-        
-        elif f0_method == "crepe":
-            f0 = self.get_f0_official_crepe_computation(x, f0_min, f0_max)
 
+        elif f0_method == "crepe":
+            f0 = self.get_f0_crepe_computation(x, f0_min, f0_max, p_len)
+        
         elif f0_method == "mangio-crepe":
             f0 = self.get_f0_crepe_computation(x, f0_min, f0_max, p_len, crepe_hop_length)
         
@@ -476,17 +469,15 @@ class VC(object):
         protect,
         crepe_hop_length,
         f0_file=None,
+        f0_min=50,
+        f0_max=1100,
     ):
-        if (
-            file_index != ""
-            and os.path.exists(file_index) == True
-            and index_rate != 0
-        ):
+        if file_index != "" and os.path.exists(file_index) == True and index_rate != 0:
             try:
                 index = faiss.read_index(file_index)
                 big_npy = index.reconstruct_n(0, index.ntotal)
-            except:
-                traceback.print_exc()
+            except Exception as error:
+                print(error)
                 index = big_npy = None
         else:
             index = big_npy = None
@@ -521,8 +512,8 @@ class VC(object):
                 for line in lines:
                     inp_f0.append([float(i) for i in line.split(",")])
                 inp_f0 = np.array(inp_f0, dtype="float32")
-            except:
-                traceback.print_exc()
+            except Exception as error:
+                print(error)
         sid = torch.tensor(sid, device=self.device).unsqueeze(0).long()
         pitch, pitchf = None, None
         if if_f0 == 1:
@@ -535,6 +526,8 @@ class VC(object):
                 filter_radius,
                 crepe_hop_length,
                 inp_f0,
+                f0_min,
+                f0_max,
             )
             pitch = pitch[:p_len]
             pitchf = pitchf[:p_len]
