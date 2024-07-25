@@ -1,5 +1,4 @@
 import os, sys
-import json
 import shutil
 import urllib.request
 import zipfile
@@ -8,9 +7,8 @@ import gradio as gr
 
 from main import song_cover_pipeline
 from audio_effects import add_audio_effects
-from modules.model_management import ignore_files, update_models_list, extract_zip, download_from_url, upload_zip_model
-from modules.ui_updates import (show_hop_slider, update_f0_method, update_button_text,
-            update_button_text_voc, update_button_text_inst, swap_visibility, swap_buttons)
+from modules.model_management import ignore_files, update_models_list, extract_zip, download_from_url, upload_zip_model, upload_separate_files
+from modules.ui_updates import show_hop_slider, update_f0_method, update_button_text, update_button_text_voc, update_button_text_inst, swap_visibility, swap_buttons
 from modules.file_processing import process_file_upload
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,21 +27,18 @@ elif warning == 'False':
 if __name__ == '__main__':
     voice_models = ignore_files(rvc_models_dir)
 
-    with gr.Blocks(title='CoverGen Lite - Politrees (v0.2)', theme=gr.themes.Soft(primary_hue="green", secondary_hue="green", neutral_hue="neutral", spacing_size="sm", radius_size="lg")) as app:
+    with gr.Blocks(title='CoverGen Lite - Politrees', theme=gr.themes.Soft(primary_hue="green", secondary_hue="green", neutral_hue="neutral", spacing_size="sm", radius_size="lg")) as app:
         
         if warning:
             with gr.Column(variant='panel'):
                 gr.HTML("<center><h2>This space is running too slow due to a weak server, so I made a Google Colab notebook to work faster with this interface: <a href='https://colab.research.google.com/drive/1HzuPgICRrjqUWQWb5Zn-l07m099-n-Nr'>Google Colab Notebook</a>.</h2></center>")
         
         with gr.Tab("Welcome/Contacts"):
-            gr.HTML("<center><h1>Welcome to CoverGen Lite - Politrees (v0.2)</h1></center>")
-            with gr.Row():
-                with gr.Column(variant='panel'):
-                    gr.HTML("<center><h2><a href='https://t.me/Politrees2'>Telegram</a></h2></center>")
-                    gr.HTML("<center><h2><a href='https://vk.com/artem__bebroy'>VKontakte</a></h2></center>")
-                with gr.Column(variant='panel'):
-                    gr.HTML("<center><h2><a href='https://t.me/pol1trees'>Telegram Channel</a></h2></center>")
-                    gr.HTML("<center><h2><a href='https://t.me/+GMTP7hZqY0E4OGRi'>Telegram Chat</a></h2></center>")
+            gr.HTML("<center><h1>Welcome to CoverGen Lite - Politrees</h1></center>")
+            with gr.Column(variant='panel'):
+                gr.HTML("<center><h2><a href='https://t.me/Politrees2'>Telegram</a></h2></center>")
+                gr.HTML("<center><h2><a href='https://t.me/pol1trees'>Telegram Channel</a></h2></center>")
+                gr.HTML("<center><h2><a href='https://t.me/+GMTP7hZqY0E4OGRi'>Telegram Chat</a></h2></center>")
             with gr.Column(variant='panel'):
                 gr.HTML("<center><h2><a href='https://www.youtube.com/channel/UCHb3fZEVxUisnqLqCrEM8ZA'>YouTube</a></h2></center>")
                 gr.HTML("<center><h2><a href='https://github.com/Bebra777228'>GitHub</a></h2></center>")
@@ -91,6 +86,9 @@ if __name__ == '__main__':
                         use_hybrid_methods.change(update_f0_method, inputs=use_hybrid_methods, outputs=f0_method)
                         crepe_hop_length = gr.Slider(8, 512, value=128, step=8, visible=False, label='Crepe Hop Length')
                         f0_method.change(show_hop_slider, inputs=f0_method, outputs=crepe_hop_length)
+                        with gr.Row():
+                            f0_min = gr.Slider(label="Minimum pitch range", info="Defines the lower limit of the pitch range that the algorithm will use to determine the fundamental frequency (F0) in the audio signal.", step=1, minimum=1, value=50, maximum=120)
+                            f0_max = gr.Slider(label="Maximum pitch range", info="Defines the upper limit of the pitch range that the algorithm will use to determine the fundamental frequency (F0) in the audio signal.", step=1, minimum=380, value=1100, maximum=16000)
                     with gr.Column(variant='panel'):
                         index_rate = gr.Slider(0, 1, value=0, label='Index Rate', info='Controls the extent to which the index file influences the analysis results. A higher value increases the influence of the index file, but may amplify breathing artifacts in the audio. Choosing a lower value may help reduce artifacts.')
                         filter_radius = gr.Slider(0, 7, value=3, step=1, label='Filter Radius', info='Manages the radius of filtering the pitch analysis results. If the filtering value is three or higher, median filtering is applied to reduce breathing noise in the audio recording.')
@@ -222,17 +220,19 @@ if __name__ == '__main__':
             with gr.Tab('Download from Link'):
                 with gr.Row():
                     with gr.Column(variant='panel'):
-                        gr.HTML("<center><h3>Paste the link from <a href='https://huggingface.co/' target='_blank'>HuggingFace</a>, <a href='https://pixeldrain.com/' target='_blank'>Pixeldrain</a>, <a href='https://drive.google.com/' target='_blank'>Google Drive</a> or <a href='https://mega.nz/' target='_blank'>Mega</a> into the field below</h3></center>")
+                        gr.HTML("<center><h3>Enter a link to the ZIP archive in the field below.</h3></center>")
                         model_zip_link = gr.Text(label='Model Download Link')
                     with gr.Column(variant='panel'):
                         with gr.Group():
                             model_name = gr.Text(label='Model Name', info='Give your uploaded model a unique name, different from other voice models.')
                             download_btn = gr.Button('Download Model', variant='primary')
 
+                gr.HTML("<h3>Supported sites: <a href='https://huggingface.co/' target='_blank'>HuggingFace</a>, <a href='https://pixeldrain.com/' target='_blank'>Pixeldrain</a>, <a href='https://drive.google.com/' target='_blank'>Google Drive</a>, <a href='https://mega.nz/' target='_blank'>Mega</a>, <a href='https://disk.yandex.ru/' target='_blank'>Yandex Disk</a></h3>")
+                
                 dl_output_message = gr.Text(label='Output Message', interactive=False)
                 download_btn.click(download_from_url, inputs=[model_zip_link, model_name], outputs=dl_output_message)
 
-            with gr.Tab('Upload Locally'):
+            with gr.Tab('Upload a ZIP archive'):
                 with gr.Row(equal_height=False):
                     with gr.Column(variant='panel'):
                         zip_file = gr.File(label='Zip File', file_types=['.zip'], file_count='single')
@@ -246,5 +246,18 @@ if __name__ == '__main__':
 
                 local_upload_output_message = gr.Text(label='Output Message', interactive=False)
                 model_upload_button.click(upload_zip_model, inputs=[zip_file, local_model_name], outputs=local_upload_output_message)
+
+            with gr.Tab('Upload files'):
+                with gr.Group():
+                    with gr.Row():
+                        pth_file = gr.File(label='.pth file', file_types=['.pth'], file_count='single')
+                        index_file = gr.File(label='.index file', file_types=['.index'], file_count='single')
+                with gr.Column(variant='panel'):
+                    with gr.Group():
+                        separate_model_name = gr.Text(label='Model Name', info='Give your uploaded model a unique name, different from other voice models.')
+                        separate_upload_button = gr.Button('Upload Model', variant='primary')
+
+                separate_upload_output_message = gr.Text(label='Output Message', interactive=False)
+                separate_upload_button.click(upload_separate_files, inputs=[pth_file, index_file, separate_model_name], outputs=separate_upload_output_message)
 
     app.launch(share=True, show_api=False).queue(api_open=False)
