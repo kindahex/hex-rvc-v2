@@ -1,14 +1,21 @@
-gradio==4.29.0
+# Main libraries
+requests
 tensorboardX
-einops
-local-attention
-pedalboard==0.7.7
 fairseq==0.12.2
 faiss-cpu==1.7.3
+
+# Audio libraries
 ffmpeg-python>=0.2.0
 praat-parselmouth>=0.4.2
 pyworld==0.3.4
-torchcrepe==0.0.20
+torchcrepe==0.0.23
+pedalboard
+edge-tts
 
-gdown
+# Optimization
+einops
+local-attention
+
+# Interfaces and cloud services
+gradio==4.29.0
 mega.py
