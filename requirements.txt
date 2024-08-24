@@ -19,3 +19,4 @@ local-attention
 # Interfaces and cloud services
 gradio==4.29.0
 mega.py
+gdown
