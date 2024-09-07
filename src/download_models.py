@@ -1,8 +1,8 @@
 from pathlib import Path
 import requests
 
-RVC_other_DOWNLOAD_LINK = 'https://huggingface.co/Politrees/all_RVC-pretrained_and_other/resolve/main/other/'
-RVC_hubert_DOWNLOAD_LINK = 'https://huggingface.co/Politrees/all_RVC-pretrained_and_other/resolve/main/HuBERTs/'
+RVC_other_DOWNLOAD_LINK = 'https://huggingface.co/Politrees/RVC_resources/resolve/main/predictors/'
+RVC_hubert_DOWNLOAD_LINK = 'https://huggingface.co/Politrees/RVC_resources/resolve/main/embedders/'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 rvc_models_dir = BASE_DIR / 'rvc_models'
