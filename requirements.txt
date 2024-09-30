@@ -20,3 +20,10 @@ local-attention
 gradio==4.29.0
 mega.py
 gdown
+
+# other
+
+torch
+transformers
+pyarabic
+gradio-client
