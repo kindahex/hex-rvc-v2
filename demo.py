@@ -15,8 +15,7 @@ from modules.ui_updates import show_hop_slider, update_f0_method, update_button_
 from modules.file_processing import process_file_upload
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+BASE_DIR = "/content/hex"
 
 
 
