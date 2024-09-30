@@ -34,10 +34,7 @@
    python demo.py
    ```
 
-4. **Training a model**:
-   To train a custom voice model, follow these steps:
-   - Preprocess your dataset using the `trainset_preprocess_pipeline.py`.
-   - Use the `train.py` script to start training with the desired configuration.
+
 
 ## Folder Structure
 
