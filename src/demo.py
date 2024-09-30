@@ -36,7 +36,7 @@ with gr.Blocks(title="Easy GUI 🔊",theme=gr.themes.Base(primary_hue="rose",neu
             with gr.Row():
                 with gr.Column():
                     with gr.Row():
-                        song_input = gr.Audio(label='Upload Your Audio File', interactive=True, show_download_button=False, show_share_button=False)                          
+                        song_input = gr.Audio(label='Upload Your Audio File', interactive=True, show_download_button=False, show_share_button=False, type="filepath")                          
                     with gr.Row():
                         output_format = gr.Dropdown(['mp3', 'flac', 'wav'], value='mp3', label='File Format', allow_custom_value=False, filterable=False)
                     
