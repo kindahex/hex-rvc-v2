@@ -44,7 +44,6 @@ with gr.Blocks(title="Easy GUI 🔊",theme=gr.themes.Base(primary_hue="rose",neu
                 with gr.Column():
                     with gr.Accordion("General Settings", open=False):
                         f0_method = gr.Dropdown(['rmvpe+', 'fcpe', 'rmvpe', 'mangio-crepe', 'crepe', 'hybrid[rmvpe+fcpe]'], value='rmvpe+', label='F0 Method', allow_custom_value=False, filterable=False)
-                        use_hybrid_methods.change(update_f0_method, inputs=use_hybrid_methods, outputs=f0_method)
                         crepe_hop_length = gr.Slider(8, 512, value=128, step=8, visible=False, label='Crepe Hop Length')
                         f0_method.change(show_hop_slider, inputs=f0_method, outputs=crepe_hop_length)
                         f0_min = gr.Slider(label="Minimum pitch range", info="Defines the lower limit of the pitch range that the algorithm will use to determine the fundamental frequency (F0) in the audio signal.", step=1, minimum=1, value=50, maximum=120)
