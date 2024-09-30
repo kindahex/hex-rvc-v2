@@ -16,21 +16,15 @@ rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
 
 
-warning = sys.argv[1]
-
-if warning == 'True':
-    warning = True
-elif warning == 'False':
-    warning = False
 
 
 if __name__ == '__main__':
     voice_models = ignore_files(rvc_models_dir)
 
 
-with gr.Blocks(title="🔊",theme=gr.themes.Base(primary_hue="rose",neutral_hue="zinc")) as app:
+with gr.Blocks(title="Easy GUI 🔊",theme=gr.themes.Base(primary_hue="rose",neutral_hue="zinc")) as app:
     with gr.Row():
-        gr.HTML("<center><h1>Welcome to CoverGen Lite - Politrees</h1></center>")
+        gr.HTML("<center><h1>EASYGUI</h1></center>")
     with gr.Tabs():
         with gr.TabItem("Inference"):
             with gr.Row():
@@ -80,7 +74,10 @@ with gr.Blocks(title="🔊",theme=gr.themes.Base(primary_hue="rose",neutral_hue=
                 download_btn.click(download_from_url, inputs=[model_zip_link, model_name], outputs=dl_output_message)
 
                 
-                
+
     
     
-    app.launch(share=True, show_api=False).queue(api_open=False)
+    
+    
+
+app.launch(share=True, show_api=False).queue(api_open=False)
