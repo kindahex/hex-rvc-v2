@@ -38,13 +38,19 @@
 
 ## Folder Structure
 
-- `configs/`: Model and training configurations.
+- `configs/`: Model configurations.
 - `infer_pack/`: Scripts for inference.
 - `rvc_models/`: Contains the trained RVC models.
 - `song_output/`: Directory for the generated output files.
 
 ## License
 This project is licensed under the MIT License.
+
+
+# feature plan
+
+1. audio separation for inference
+2. tts input
 
 ## Contribution
 Feel free to submit issues or pull requests to improve the project.
