@@ -31,22 +31,6 @@ voice_models = ignore_files(rvc_models_dir)
 
 
 
-async def text_to_speech_edge(text, language_code, speaker):
-    
-    # Get the voice for the selected language and speaker
-    voice = language_dict[language_code][speaker]
-    communicate = edge_tts.Communicate(text, voice)
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as tmp_file:
-      tmp_path = tmp_file.name
-      await communicate.save(tmp_path)
-
-    return text, tmp_path
-
-
-def get_speakers(language):
-    print(language)
-    speakers = list(language_dict[language].keys())
-    return gr.Dropdown(choices=speakers, value=speakers[0], interactive=True), gr.Checkbox(visible=language == "Arabic", interactive=True)
 
 with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
     with gr.Row():
@@ -64,16 +48,7 @@ with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
                 with gr.Column():
                     with gr.Row():
                         song_input = gr.Audio(label='Upload Your Audio File', interactive=True, show_download_button=False, show_share_button=False, type="filepath")  
-                        with gr.Accordion("Tts inputs"):
-                            input_text = gr.Textbox(lines=5, label="Input Text", placeholder="Enter text to convert to speech")
-                            language = gr.Dropdown(
-                                choices=list(language_dict.keys()), value=default_language, label="Languages", interactive=True
-                            )
-                            speaker = gr.Dropdown(choices=[], value=default_speaker, label="Speakers", interactive=False)
-                            run_btn = gr.Button(value="Generate Audio", variant="primary")
-                            with gr.Column():
-                                output_text = gr.Textbox(label="Output Text")
-                    
+                        
                     with gr.Row():
                         output_format = gr.Dropdown(['mp3', 'flac', 'wav'], value='mp3', label='File Format', allow_custom_value=False, filterable=False)
                     
@@ -97,9 +72,7 @@ with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
             
             with gr.Row():
 
-                language.change(get_speakers, inputs=[language], outputs=[speaker, tashkeel_checkbox])
-                run_btn.click(text_to_speech_edge, inputs=[input_text, language, speaker], outputs=[output_text, song_input])
-                    
+                
                 generate_btn.click(pipeline_inference,
                               inputs=[song_input, rvc_model, pitch, index_rate, filter_radius, rms_mix_rate, f0_method, crepe_hop_length, protect, output_format],
                               outputs=[converted_voice], api_name="infer_voice")
