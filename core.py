@@ -71,7 +71,7 @@ def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method,
     torch.cuda.empty_cache()
     print(f'Voice conversion complete. Output saved to {output_path}')
 
-def song_cover_pipeline(uploaded_file, voice_model, pitch_change, index_rate=0.5, filter_radius=3, rms_mix_rate=0.25, f0_method='rmvpe',
+def pipeline_inference(uploaded_file, voice_model, pitch_change, index_rate=0.5, filter_radius=3, rms_mix_rate=0.25, f0_method='rmvpe',
                         crepe_hop_length=128, protect=0.33, output_format='mp3', progress=gr.Progress(), f0_min=50, f0_max=1100):
 
     print('Starting song cover pipeline...')
