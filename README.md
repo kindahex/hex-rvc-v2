@@ -1,8 +1,8 @@
 ---
 title: EasyGUI
 emoji: 🔥🚀
-colorFrom: green
-colorTo: gray
+colorFrom: indigo
+colorTo: indigo
 sdk: gradio
 sdk_version: 5.0.0b4
 app_file: app.py
