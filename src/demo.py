@@ -29,8 +29,9 @@ with gr.Blocks(title="Easy GUI 🔊",theme=gr.themes.Soft()) as app:
         with gr.TabItem("Inference"):
             with gr.Row():
                 rvc_model = gr.Dropdown(voice_models, label='Voice Models')
-                ref_btn = gr.Button('Refresh Models List', variant='primary')
-                pitch = gr.Slider(-24, 24, value=0, step=0.5, label='Pitch Adjustment', info='-24 - male voice || 24 - female voice')
+                pitch = gr.Slider(-12, 12, value=0, step=0.5, label='Pitch Adjustment', info='-12 - male voice || 12 - female voice')
+            with gr.Row():
+                ref_btn = gr.Button('Refresh Models List', variant='primary')           
                 generate_btn = gr.Button("Generate", variant='primary', scale=1)
              
             with gr.Row():
