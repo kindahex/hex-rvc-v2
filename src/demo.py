@@ -16,7 +16,7 @@ rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
 
 
-
+print("\n-------------------------------\nRVC v2 Easy GUI \n-------------------------------\n")
 
 if __name__ == '__main__':
     voice_models = ignore_files(rvc_models_dir)
