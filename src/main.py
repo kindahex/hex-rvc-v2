@@ -15,6 +15,7 @@ RVC_MODELS_DIR = os.path.join(BASE_DIR, 'rvc_models')
 OUTPUT_DIR = os.path.join(BASE_DIR, 'song_output')
 
 def get_rvc_model(voice_model):
+    print(f'Loading RVC model for: {voice_model}')
     model_dir = os.path.join(RVC_MODELS_DIR, voice_model)
     rvc_model_path = next((os.path.join(model_dir, f) for f in os.listdir(model_dir) if f.endswith('.pth')), None)
     rvc_index_path = next((os.path.join(model_dir, f) for f in os.listdir(model_dir) if f.endswith('.index')), None)
@@ -25,15 +26,19 @@ def get_rvc_model(voice_model):
     return rvc_model_path, rvc_index_path
 
 def convert_to_stereo(audio_path):
+    print(f'Converting {audio_path} to stereo if needed...')
     wave, sr = librosa.load(audio_path, mono=False, sr=44100)
     if type(wave[0]) != np.ndarray:
         stereo_path = 'Voice_stereo.wav'
         command = shlex.split(f'ffmpeg -y -loglevel error -i "{audio_path}" -ac 2 -f wav "{stereo_path}"')
         subprocess.run(command)
+        print(f'Converted to stereo: {stereo_path}')
         return stereo_path
+    print('Audio already in stereo.')
     return audio_path
 
 def get_hash(filepath):
+    print(f'Generating hash for file: {filepath}')
     file_hash = hashlib.blake2b()
     with open(filepath, 'rb') as f:
         while chunk := f.read(8192):
@@ -42,8 +47,10 @@ def get_hash(filepath):
 
 def display_progress(percent, message, progress=gr.Progress()):
     progress(percent, desc=message)
+    print(f'{message} - {percent*100}% complete')
 
 def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method, index_rate, filter_radius, rms_mix_rate, protect, crepe_hop_length, f0_min, f0_max):
+    print(f'Starting voice conversion for {vocals_path} with {voice_model} model.')
     rvc_model_path, rvc_index_path = get_rvc_model(voice_model)
 
     if torch.cuda.is_available():
@@ -51,6 +58,7 @@ def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method,
     else:
         device = 'cpu'
 
+    print(f'Using device: {device}')
     config = Config(device, True)
     hubert_model = load_hubert(device, config.is_half, os.path.join(RVC_MODELS_DIR, 'hubert_base.pt'))
     cpt, version, net_g, tgt_sr, vc = get_vc(device, config.is_half, config, rvc_model_path)
@@ -61,10 +69,12 @@ def voice_change(voice_model, vocals_path, output_path, pitch_change, f0_method,
     del hubert_model, cpt, net_g, vc
     gc.collect()
     torch.cuda.empty_cache()
+    print(f'Voice conversion complete. Output saved to {output_path}')
 
 def song_cover_pipeline(uploaded_file, voice_model, pitch_change, index_rate=0.5, filter_radius=3, rms_mix_rate=0.25, f0_method='rmvpe',
                         crepe_hop_length=128, protect=0.33, output_format='mp3', progress=gr.Progress(), f0_min=50, f0_max=1100):
 
+    print('Starting song cover pipeline...')
     if not uploaded_file or not voice_model:
         raise ValueError('Make sure that the song input field and voice model field are filled in.')
 
@@ -87,4 +97,5 @@ def song_cover_pipeline(uploaded_file, voice_model, pitch_change, index_rate=0.5
     voice_change(voice_model, orig_song_path, ai_cover_path, pitch_change, f0_method, index_rate,
                  filter_radius, rms_mix_rate, protect, crepe_hop_length, f0_min, f0_max)
 
+    print(f'AI cover generation complete. File saved at {ai_cover_path}')
     return ai_cover_path
