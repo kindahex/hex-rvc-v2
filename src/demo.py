@@ -38,7 +38,7 @@ with gr.Blocks(title="Easy GUI 🔊",theme=gr.themes.Base(primary_hue="rose",neu
                     with gr.Row():
                         song_input = gr.Audio(label='Upload Your Audio File', interactive=True, show_download_button=False, show_share_button=False)                          
                     with gr.Row():
-                        output_format = gr.Dropdown(['mp3', 'flac', 'wav'], value='mp3', label='File Format', scale=0.1, allow_custom_value=False, filterable=False)
+                        output_format = gr.Dropdown(['mp3', 'flac', 'wav'], value='mp3', label='File Format', allow_custom_value=False, filterable=False)
                     
                     
                 with gr.Column():
@@ -72,11 +72,7 @@ with gr.Blocks(title="Easy GUI 🔊",theme=gr.themes.Base(primary_hue="rose",neu
                 dl_output_message = gr.Text(label='Output Message', interactive=False)
                 download_btn.click(download_from_url, inputs=[model_zip_link, model_name], outputs=dl_output_message)
 
-                
-
-    
-    
-    
+                 
     
 
 app.launch(share=True, show_api=False).queue(api_open=False)
