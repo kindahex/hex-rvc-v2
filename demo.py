@@ -8,7 +8,7 @@ import tempfile
 from language_dict import *
 import edge_tts
 import gradio as gr
-from main import song_cover_pipeline
+from core import pipeline_inference
 from audio_effects import add_audio_effects
 from modules.model_management import ignore_files, update_models_list, extract_zip, download_from_url, upload_zip_model, upload_separate_files
 from modules.ui_updates import show_hop_slider, update_f0_method, update_button_text, update_button_text_voc, update_button_text_inst, swap_visibility, swap_buttons
@@ -95,7 +95,7 @@ with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
                 language.change(get_speakers, inputs=[language], outputs=[speaker, tashkeel_checkbox])
                 run_btn.click(text_to_speech_edge, inputs=[input_text, language, speaker], outputs=[output_text, song_input])
                     
-                generate_btn.click(song_cover_pipeline,
+                generate_btn.click(pipeline_inference,
                               inputs=[song_input, rvc_model, pitch, index_rate, filter_radius, rms_mix_rate, f0_method, crepe_hop_length, protect, output_format],
                               outputs=[converted_voice], api_name="infer_voice")
 
