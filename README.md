@@ -1,5 +1,5 @@
 ---
-title: EasyGUI
+title: Hex RVC
 emoji: 🔥🚀
 colorFrom: indigo
 colorTo: indigo
