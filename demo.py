@@ -25,9 +25,7 @@ output_dir = os.path.join(BASE_DIR, 'song_output')
 print("\n-------------------------------\n HEX RVC V2 \n-------------------------------\n")
 
 
-voice_models = ignore_files(rvc_models_dir)
-
-
+voice_models = get_current_models(rvc_models_dir)
 
 
 with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
