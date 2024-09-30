@@ -1,5 +1,5 @@
 ---
-title: CoverGen
+title: EasyGUI
 emoji: 🔥🚀
 colorFrom: green
 colorTo: gray
