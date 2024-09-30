@@ -22,7 +22,7 @@ if __name__ == '__main__':
     voice_models = ignore_files(rvc_models_dir)
 
 
-with gr.Blocks(title="Easy GUI 🔊",theme=gr.themes.Base(primary_hue="rose",neutral_hue="zinc")) as app:
+with gr.Blocks(title="Easy GUI 🔊",theme=gr.themes.Soft()) as app:
     with gr.Row():
         gr.HTML("<center><h1>EASYGUI</h1></center>")
     with gr.Tabs():
