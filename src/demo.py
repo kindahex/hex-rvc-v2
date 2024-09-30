@@ -22,9 +22,9 @@ if __name__ == '__main__':
     voice_models = ignore_files(rvc_models_dir)
 
 
-with gr.Blocks(title="Easy GUI 🔊",theme=gr.themes.Soft()) as app:
+with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
     with gr.Row():
-        gr.HTML("<center><h1>EASYGUI</h1></center>")
+        gr.HTML("<center><h1>HEX RVC</h1></center>")
     with gr.Tabs():
         with gr.TabItem("Inference"):
             with gr.Row():
