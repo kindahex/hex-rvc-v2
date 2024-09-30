@@ -7,7 +7,9 @@ import requests
 import gradio as gr
 from mega import Mega
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = "/content/hex"
+
+
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 
 def ignore_files(models_dir):
