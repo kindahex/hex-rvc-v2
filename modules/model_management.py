@@ -7,7 +7,7 @@ import requests
 import gradio as gr
 from mega import Mega
 
-BASE_DIR = "/content/hex"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
