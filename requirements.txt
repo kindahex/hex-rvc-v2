@@ -1,29 +1,23 @@
-# Main libraries
 requests
 tensorboardX
 fairseq==0.12.2
 faiss-cpu==1.7.3
-
-# Audio libraries
 ffmpeg-python>=0.2.0
 praat-parselmouth>=0.4.2
 pyworld==0.3.4
 torchcrepe==0.0.23
 pedalboard
 edge-tts
-
-# Optimization
-einops
-local-attention
-
-# Interfaces and cloud services
-gradio==4.29.0
-mega.py
-gdown
-
-# other
-
 torch
 transformers
 pyarabic
 gradio-client
+einops
+local-attention
+gradio==3.43.0
+mega.py
+gdown
+yt_dlp
+audio-separator[gpu]==0.17.5
+
+
