@@ -44,7 +44,7 @@
 - `song_output/`: Directory for the generated output files.
 - `rvc_audios`: Directory for inference file.
 
-## License
+# License
 This project is licensed under the MIT License.
 
 
@@ -53,9 +53,13 @@ This project is licensed under the MIT License.
 1. audio separation for inference
 2. tts input
 
-## Contribution
-Feel free to submit issues or pull requests to improve the project.
+# Contribution
+If you want to participate and help me with this project feel free to create an [issue](https://github.com/kindahex/hex-rvc-v2/issues) if something goes wrong or make a [pull request](https://github.com/kindahex/hex-rvc-v2/pulls) to improve this project.
+
+**-Any type of contribution is welcome!-**
+
+If you liked this Colab you can star this repository. I will appreciate a lot
 
 ## Acknowledgments
-Thanks to the open-source community for providing the foundational tools used in this project.
+Thanks to the open-source community for providing the foundational tools used in this project!
 
