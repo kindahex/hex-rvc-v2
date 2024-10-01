@@ -1,4 +1,12 @@
-# Hex RVC v2
+<h1 align="center"><b> Hex RVC v2* <b></h1>
+  
+<div align="center">
+
+[![madewithlove](https://img.shields.io/badge/made_with-%E2%9D%A4-red?style=for-the-badge&labelColor=orange)](https://github.com/Eddycrack864/UVR5-NO-UI)
+
+![cutecounter](https://count.nett.moe/get/uvr5_no_ui_colab/img?theme=rule34)
+
+[![Open In Colab](https://img.shields.io/badge/Colab-F9AB00?style=for-the-badge&logo=googlecolab&color=525252)](https://colab.research.google.com/github/kindahex/hex-rvc-v2/blob/main/Hex_RVC_v2.ipynb)
 
 **Hex RVC v2** is an easy-to-use Voice Conversion framework based on VITS, enabling users to create voice models and perform conversions from one voice to another. This repository includes the tools and scripts needed to train models and perform inference with pretrained voice conversion models.
 
