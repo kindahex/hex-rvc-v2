@@ -42,6 +42,7 @@
 - `infer_pack/`: Scripts for inference.
 - `rvc_models/`: Contains the trained RVC models.
 - `song_output/`: Directory for the generated output files.
+- `rvc_audios`: Directory for inference file.
 
 ## License
 This project is licensed under the MIT License.
