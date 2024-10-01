@@ -17,16 +17,16 @@ from modules.file_processing import process_file_upload
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+# PATH FOR STUFF
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
 output_dir = os.path.join(BASE_DIR, 'song_output')
-
+rvc_audio_dir = os.path.join(BASE_DIR, 'rvc_audios')
 
 print("\n-------------------------------\n HEX RVC V2 \n-------------------------------\n")
 
 
 voice_models = get_current_models(rvc_models_dir)
-
+audios_inference = get_current_models(rvc_audio_dir)
 
 with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
     with gr.Row():
@@ -43,7 +43,7 @@ with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
             with gr.Row():
                 with gr.Column():
                     with gr.Row():
-                        song_input = gr.Audio(label='Upload Your Audio File', interactive=True, show_download_button=False, show_share_button=False, type="filepath")  
+                        song_input = gr.Dropdown(voice_models, label='Audios File')
                         
                     with gr.Row():
                         output_format = gr.Dropdown(['mp3', 'flac', 'wav'], value='mp3', label='File Format', allow_custom_value=False, filterable=False)
