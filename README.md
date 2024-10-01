@@ -1,6 +1,6 @@
 # Hex RVC v2
 
-**Hex RVC v2** is an easy-to-use voice cloning app built for real-time voice conversion, enabling users to create voice models and perform conversions from one voice to another. This repository includes the tools and scripts needed to train models and perform inference with pretrained voice conversion models.
+**Hex RVC v2** is an easy-to-use Voice Conversion framework based on VITS, enabling users to create voice models and perform conversions from one voice to another. This repository includes the tools and scripts needed to train models and perform inference with pretrained voice conversion models.
 
 ## Features
 
