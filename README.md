@@ -1,4 +1,4 @@
-<h1 align="center"><b> Hex RVC v2* <b></h1>
+<h1 align="center"><b> ★ Hex RVC v2 ★ <b></h1>
   
 <div align="center">
 
