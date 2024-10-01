@@ -24,6 +24,11 @@ rvc_audio_dir = os.path.join(BASE_DIR, 'rvc_audios')
 
 print("\n-------------------------------\n HEX RVC V2 \n-------------------------------\n")
 
+def update_audios_list():
+    models_l = ignore_files(rvc_audio_dir)
+    return gr.update(choices=sudios)
+
+
 
 voice_models = get_current_models(rvc_models_dir)
 audios_inference = get_current_models(rvc_audio_dir)
@@ -44,7 +49,8 @@ with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
                 with gr.Column():
                     with gr.Row():
                         song_input = gr.Dropdown(voice_models, label='Audios File')
-                        
+                        refaudi_btn = gr.Button('Refresh Audios List', variant='primary')           
+             
                     with gr.Row():
                         output_format = gr.Dropdown(['mp3', 'flac', 'wav'], value='mp3', label='File Format', allow_custom_value=False, filterable=False)
                     
@@ -64,10 +70,10 @@ with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
                     converted_voice = gr.Audio(label='Converted Voice', scale=5, show_share_button=False)                    
                     
                     ref_btn.click(update_models_list, None, outputs=rvc_model)
+                    refaudi_btn.click(update_audios_list, None, outputs=song_input)
             
             
             with gr.Row():
-
                 
                 generate_btn.click(pipeline_inference,
                               inputs=[song_input, rvc_model, pitch, index_rate, filter_radius, rms_mix_rate, f0_method, crepe_hop_length, protect, output_format],
@@ -85,4 +91,4 @@ with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
                  
     
 
-app.launch(share=True, show_api=False).queue(api_open=False)
+app.launch(share=True)
