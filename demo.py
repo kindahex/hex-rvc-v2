@@ -37,7 +37,9 @@ def show_hop_slider(pitch_detection_algo):
     else:
         return gr.update(visible=False)
 
-
+def update_models_list():
+    models_l = ignore_files(rvc_models_dir)
+    return gr.update(choices=models_l)
 
 
 def update_button_text():
