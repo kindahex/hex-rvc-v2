@@ -3,7 +3,7 @@ import requests
 
 RVC_DOWNLOAD_LINK = 'https://huggingface.co/kindahex/voice-conversion/resolve/main/'
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = "/content/hex"
 rvc_models_dir = BASE_DIR / 'rvc_models'
 
 
