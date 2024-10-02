@@ -12,7 +12,8 @@ from audio_effects import add_audio_effects
 
 
 
-BASE_DIR = "/content/hex"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Ensure directories exist
 rvc_models_dir = os.path.join(BASE_DIR, 'rvc_models')
