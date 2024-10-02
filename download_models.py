@@ -4,7 +4,7 @@ import requests
 RVC_DOWNLOAD_LINK = 'https://huggingface.co/kindahex/voice-conversion/resolve/main/'
 
 BASE_DIR = "/content/hex"
-rvc_models_dir = BASE_DIR / 'rvc_models'
+rvc_models_dir = f'{BASE_DIR}/rvc_models'
 
 
 def dl_model(link, model_name, dir_name):
