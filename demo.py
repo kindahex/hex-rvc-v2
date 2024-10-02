@@ -32,12 +32,6 @@ def process_file_upload(file):
     return file.name, gr.update(value=file.name)
 
 
-def (pitch_detection_algo):
-    if pitch_detection_algo in ['mangio-crepe']:
-        return gr.update(visible=True)
-    else:
-        return gr.update(visible=False)
-
 
 
 def update_button_text():
