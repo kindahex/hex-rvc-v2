@@ -31,6 +31,12 @@ print("\n-------------------------------\n HEX RVC V2 (Colab Editions) \n-------
 def process_file_upload(file):
     return file.name, gr.update(value=file.name)
 
+def show_hop_slider(pitch_detection_algo):
+    if pitch_detection_algo in ['mangio-crepe']:
+        return gr.update(visible=True)
+    else:
+        return gr.update(visible=False)
+
 
 
 
