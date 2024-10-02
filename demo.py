@@ -28,10 +28,20 @@ def update_audios_list():
     models_l = ignore_files(rvc_audio_dir)
     return gr.update(choices=sudios)
 
+def get_current_models(models_dir):
+    models_list = os.listdir(models_dir)
+    items_to_remove = ['hubert_base.pt', 'MODELS.txt', 'public_models.json', 'rmvpe.pt']
+    return [item for item in models_list if item not in items_to_remove]
+
+
+def get_current_audios(models_dir):
+    models_list = os.listdir(models_dir)
+    items_to_remove = ['audios_someguy.mp3', 'audios_somegirl.mp3', 'readme.txt']
+    return [item for item in models_list if item not in items_to_remove]
 
 
 voice_models = get_current_models(rvc_models_dir)
-audios_inference = get_current_models(rvc_audio_dir)
+audios_inference = get_current_audios(rvc_audio_dir)
 
 with gr.Blocks(title="HEX RVC 🔊",theme="Hev832/niceandsimple") as app:
     with gr.Row():
