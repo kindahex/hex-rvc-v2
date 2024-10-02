@@ -15,33 +15,10 @@
 - **easy voice cloning**: easy to use app to voice clone.
 - **Flexible Configuration**: Easily configure and modify model settings.
   
-## Requirements
-- Python 3.x
-- Install dependencies using:
-  ```bash
-  pip install -r requirements.txt
-  ```
+# informations
 
-## Getting Started
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/kindahex/hex-rvc-v2.git
-   cd hex-rvc-v2
-   ```
-
-2. **Set up the environment**:
-   Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run the demo**:
-   To test the voice conversion model, use the `demo.py` script:
-   ```bash
-   python demo.py
-   ```
-
+using colab is recomended
 
 
 ## Folder Structure
