@@ -9,7 +9,7 @@ from language_dict import *
 import edge_tts
 from core import pipeline_inference
 from audio_effects import add_audio_effects
-
+from modules.model_management import *
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
