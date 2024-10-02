@@ -14,7 +14,7 @@ pyarabic
 gradio-client
 einops
 local-attention
-gradio==3.43.0
+gradio==4.29.0
 mega.py
 gdown
 yt_dlp
