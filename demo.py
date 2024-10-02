@@ -9,9 +9,7 @@ from language_dict import *
 import edge_tts
 from core import pipeline_inference
 from audio_effects import add_audio_effects
-from modules.model_management import ignore_files, update_models_list, extract_zip, download_from_url, upload_zip_model, upload_separate_files
-from modules.ui_updates import show_hop_slider, update_f0_method, update_button_text, update_button_text_voc, update_button_text_inst, swap_visibility, swap_buttons
-from modules.file_processing import process_file_upload
+
 
 
 BASE_DIR = "/content/hex"
@@ -26,6 +24,36 @@ os.makedirs(output_dir, exist_ok=True)
 os.makedirs(rvc_audio_dir, exist_ok=True)
 
 print("\n-------------------------------\n HEX RVC V2 (Colab Editions) \n-------------------------------\n")
+
+
+
+def process_file_upload(file):
+    return file.name, gr.update(value=file.name)
+
+
+def (pitch_detection_algo):
+    if pitch_detection_algo in ['mangio-crepe']:
+        return gr.update(visible=True)
+    else:
+        return gr.update(visible=False)
+
+
+
+def update_button_text():
+    return gr.update(label="Upload different audio file")
+
+def update_button_text_voc():
+    return gr.update(label="Upload different vocals")
+
+def update_button_text_inst():
+    return gr.update(label="Upload different instrumental")
+
+
+def swap_visibility():
+    return gr.update(visible=True), gr.update(visible=False), gr.update(value=''), gr.update(value=None)
+
+def swap_buttons():
+    return gr.update(visible=False), gr.update(visible=True)
 
 def update_audios_list():
     audios_list = ignore_files(rvc_audio_dir)
